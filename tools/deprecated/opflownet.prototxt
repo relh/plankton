@@ -1,0 +1,100 @@
+name: "PoseNet"
+
+input: "data"
+input_dim: 1
+input_dim: 2
+input_dim: 60
+input_dim: 45
+
+layers {
+	name: "conv1"
+	type: CONVOLUTION
+	bottom: "data"
+	top: "conv1"
+	convolution_param {
+		num_output: 1
+		kernel_size: 6
+		pad: 3
+		stride: 4
+		weight_filler {
+			type: "gaussian"
+			std: 1
+		}
+	}
+}
+layers {
+  name: "relu1"
+  type: RELU
+  bottom: "conv1"
+  top: "conv1"
+}
+
+layers {
+	name: "full1"
+	type: INNER_PRODUCT
+	bottom: "conv1"
+	top: "full1"
+	inner_product_param {
+		num_output: 40
+		weight_filler {
+			type: "gaussian"
+			std: 0.1
+		}
+		bias_filler {
+			type: "gaussian"
+			std: .1
+		}
+	}
+}
+layers {
+	name: "relu3"
+	type: RELU
+	bottom: "full1"
+	top: "full1"
+}
+layers {
+	name: "full2"
+	type: INNER_PRODUCT
+	bottom: "full1"
+	top: "full2"
+	inner_product_param {
+		num_output: 30
+		weight_filler {
+			type: "gaussian"
+			std: 0.01
+		}
+		bias_filler {
+			type: "gaussian"
+			std: .1
+		}
+	}
+}
+layers {
+	name: "relu4"
+	type: RELU
+	bottom: "full2"
+	top: "full2"
+}
+layers {
+	name: "full3"
+	type: INNER_PRODUCT
+	bottom: "full2"
+	top: "full3"
+	inner_product_param {
+		num_output: 2
+		weight_filler {
+			type: "gaussian"
+			std: .1
+		}
+		bias_filler {
+			type: "gaussian"
+			std: 1
+		}
+	}
+}
+layers {
+	name: "relu5"
+	type: RELU
+	bottom: "full3"
+	top: "full3"
+}
