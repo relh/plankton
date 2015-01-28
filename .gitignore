@@ -1,0 +1,4 @@
+planknet/plankton_train_lmdb
+planknet/plankton_val_lmdb
+/data
+planknet/planknet_train_iter_*
