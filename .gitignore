@@ -1,6 +1,6 @@
 /planknet/plankton_train_lmdb
 /planknet/plankton_val_lmdb
 /data
-/planknet/planknet_train_iter_*
+/planknet/planknet_iter_*
 /tools/submission1.csv
-/tools/submission1.csv.zip
+/tools/submission.csv.zip
