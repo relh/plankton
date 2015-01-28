@@ -1,8 +1,13 @@
 import cv2
+import numpy as np
 
-def pad(img, size = (128, 128)):
- padded = np.zeros(size, np.uint8)
- padded[64 - img.shape[0]/2:64 + img.shape[1]/2, 64 - img.shape[1]/2:64 + img.shape[1]/2] = img
+def pad(img, size = 128):
+ padded = np.zeros((size, size), np.uint8)
+ height_start = size/2-img.shape[0]/2
+ height_end = height_start + img.shape[0]
+ width_start = size/2-img.shape[1]/2
+ width_end = width_start + img.shape[1]
+ padded[height_start:height_end,width_start:width_end] = img
  return padded
 
 def mass(img, radius=60):
@@ -14,31 +19,32 @@ def mass(img, radius=60):
 def rotate(img, step):
   imgs = [img]
   for amount in range(step, 360, step):
-   r_mat = cv2.getRotationMatrix2D((cropped_img.shape[0]/2, cropped_img.shape[0]/2), amount, 1)
+   r_mat = cv2.getRotationMatrix2D((img.shape[0]/2, img.shape[0]/2), amount, 1)
    imgs.append(cv2.warpAffine(img, r_mat, img.shape))
   return imgs
+
+def find_radius(img):
+ start_radius = img.shape[0]/2 - 7
+ use_radius = start_radius
+ for radius in range(start_radius, 0, -1):
+  if mass(img, radius) > 1.0:
+   break
+  else:
+   use_radius = radius
+ return use_radius + 5
 
 def transform(img_path):
  s_img = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2GRAY)
  s_img = 255 - s_img
  dim = int(max(s_img.shape)*(2**0.5)+0.9)
- l_img = pad(s_img, (dim, dim))
+ l_img = pad(s_img, dim)
 
- start_radius = l_img.shape[0]/2 - 7
- use_radius = start_radius
- for radius in range(start_radius, 0, -1):
-  if mass(l_img, radius) > 1.0:
-   break
-  else:
-   use_radius = radius
-
- r = use_radius + 5
-
+ r = find_radius(l_img)
  cropped_img = l_img[l_img.shape[0]/2-r:l_img.shape[0]/2+r,l_img.shape[0]/2-r:l_img.shape[0]/2+r]
 
- img_128 = cv2.resize(cropped_img, (128,128), cv2.INTER_CUBIC)
- img_96 = pad(cv2.resize(cropped_img, (96,96), cv2.INTER_CUBIC), (128,128))
- img_64 = pad(cv2.resize(cropped_img, (64,64), cv2.INTER_CUBIC), (128,128))
+ img_128 = cv2.resize(cropped_img, (128,128), interpolation = cv2.INTER_CUBIC)
+ img_96 = pad(cv2.resize(cropped_img, (96,96), interpolation = cv2.INTER_CUBIC), 128)
+ img_64 = pad(cv2.resize(cropped_img, (64,64), interpolation = cv2.INTER_CUBIC), 128)
 
  output = rotate(img_128, 30) + rotate(img_96, 30) + rotate(img_64, 30)
 
