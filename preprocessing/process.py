@@ -60,15 +60,16 @@ def consume(img_path):
 def process(img_dir):
  for path, _, files in os.walk(img_dir):
   for file_name in files:
-   if '.' not in file_name:
-    continue
    extension = file_name.split('.')[-1]
    if extension.lower() not in ['jpg','png','bmp','gif','jpeg']:
     continue
    if '_p_' in file_name:
     continue
    img_path = os.path.join(img_dir, path, file_name)
-   consume(img_path)
+   try:
+    consume(img_path)
+   except:
+    print '(!) error with ' + img_path
 
 if __name__ == '__main__':
  img_dir = str(raw_input('path: '))
