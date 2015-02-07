@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import os
 
 def pad(img, size = 128):
  padded = np.zeros((size, size), np.uint8)
@@ -17,11 +18,11 @@ def mass(img, radius=60):
  return cv2.moments(np.multiply(mask, img))['m00']
 
 def rotate(img, step):
-  imgs = [img]
-  for amount in range(step, 360, step):
-   r_mat = cv2.getRotationMatrix2D((img.shape[0]/2, img.shape[0]/2), amount, 1)
-   imgs.append(cv2.warpAffine(img, r_mat, img.shape))
-  return imgs
+ imgs = [img]
+ for amount in range(step, 360, step):
+  r_mat = cv2.getRotationMatrix2D((img.shape[0]/2, img.shape[0]/2), amount, 1)
+  imgs.append(cv2.warpAffine(img, r_mat, img.shape))
+ return imgs
 
 def find_radius(img):
  start_radius = img.shape[0]/2 - 7
@@ -50,12 +51,25 @@ def transform(img_path):
 
  return output
 
-def process(img_path):
+def consume(img_path):
  images = transform(img_path)
  for i in range(len(images)):
-  new_path = img_path.rsplit('.',1)[0] + '_' + str(i) + '.' + img_path.split('.')[-1]
+  new_path = img_path.rsplit('.',1)[0] + '_p_' + str(i) + '.' + img_path.split('.')[-1]
   cv2.imwrite(new_path, images[i])
 
+def process(img_dir):
+ for path, _, files in os.walk(img_dir):
+  for file_name in files:
+   if '.' not in file_name:
+    continue
+   extension = file_name.split('.')[-1]
+   if extension.lower() not in ['jpg','png','bmp','gif','jpeg']:
+    continue
+   if '_p_' in file_name:
+    continue
+   img_path = os.path.join(img_dir, path, file_name)
+   consume(img_path)
+
 if __name__ == '__main__':
- img_path = str(raw_input('path: '))
- process(img_path)
+ img_dir = str(raw_input('path: '))
+ process(img_dir)
