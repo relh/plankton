@@ -58,8 +58,15 @@ function scandir(directory)
 end
 files = scandir('test')
 
+iii = 0;
 
 repeat
+iii = iii+1;
+if iii%25==0 then
+io.stderr:write("finished ")
+io.stderr:write(iii)
+io.stderr:write("\n")
+end
 outputt = "";
 answer = io.read()
 if answer=="end" then
