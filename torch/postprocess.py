@@ -9,7 +9,7 @@ line = results.readline()
 while line != '':
  stuff = line.split('m')[1]
  if ',' in stuff:
-  stuffsplit = stuff.split(',',1)
+  stuffsplit = stuff.split(',')
   outputline = stuffsplit[0]
   outputarray = [math.exp(float(x)) for x in stuffsplit[1:]]
   outputline += ',' + ','.join(map(str, outputarray[:118]))
