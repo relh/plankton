@@ -14,7 +14,7 @@ while line != '':
   outputarray = [math.exp(float(x)) for x in stuffsplit[1:]]
   outputline += ',' + ','.join(map(str, outputarray[:118]))
   outputline += ',0,'
-  outputline += str(outputarray[119])
+  outputline += str(outputarray[118])
   outputline += ',0\n'
   outfile.write(outputline)
  line = results.readline()
