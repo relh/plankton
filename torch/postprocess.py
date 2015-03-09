@@ -17,4 +17,4 @@ while line != '':
   outputline += str(outputarray[119])
   outputline += ',0\n'
   outfile.write(outputline)
-
+ line = results.readline()
