@@ -69,11 +69,16 @@ io.stderr:write("\n")
 end
 answer = io.read()
 if answer=="end" then
+print("")
 else
-thingy = testHook({3,256,256},'test/'..answer
-prediction = model:forward(thingy)[1]:cuda())
-prediction_acc = model:forward(thingy)[1]:cuda())
+thingy = testHook({3,256,256},'test/'..answer)
+prediction = model:forward(thingy[1]:cuda())
+prediction_acc = prediction
 geomean = 0
+
+for i = 1,119 do
+prediction[i] = math.exp(prediction[i])
+end
 
 for j = 2,10 do
 geomean_x=1;
@@ -82,15 +87,19 @@ geomean_x= geomean_x * prediction[i];
 end
 geomean_x = geomean_x ^ (1.0/118.0);
 geomean = geomean + geomean_x
-prediction =  model:forward(thingy)[j]:cuda());
+prediction =  model:forward(thingy[j]:cuda());
+for i=1,119 do
+prediction[i] = math.exp(prediction[i])
+end
 prediction_acc = prediction_acc + prediction
 end
 
 outputt = string.gsub(answer,"_p_","")..",";
 for i=1,118 do
-outputt = outputt..tostring(prediction[i])..",";
-outputt = outputt..tostring(geomean)..","..tostring(prediction[119])..","..tostring(geomean)..\n";
+outputt = outputt..tostring(prediction_acc[i])..",";
 end
+outputt = outputt..tostring(geomean)..","..tostring(prediction_acc[119])..","..tostring(geomean).."\n";
 print(outputt)
+end
 until answer=="end"
 
