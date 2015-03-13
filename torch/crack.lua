@@ -67,16 +67,29 @@ io.stderr:write("finished ")
 io.stderr:write(iii)
 io.stderr:write("\n")
 end
-outputt = "";
 answer = io.read()
 if answer=="end" then
 else
-prediction = model:forward(testHook({3,256,256},'test/'..answer)[1]:cuda())
-outputt = outputt..answer..",";
-for i = 1, 119 do
-outputt = outputt..tostring(prediction[i])..",";
+thingy = testHook({3,256,256},'test/'..answer
+prediction = model:forward(thingy)[1]:cuda())
+prediction_acc = model:forward(thingy)[1]:cuda())
+geomean = 0
+
+for j = 2,10 do
+geomean_x=1;
+for i = 1, 118 do
+geomean_x= geomean_x * prediction[i];
 end
-outputt = outputt.."0,0\n";
+geomean_x = geomean_x ^ (1.0/118.0);
+geomean = geomean + geomean_x
+prediction =  model:forward(thingy)[j]:cuda());
+prediction_acc = prediction_acc + prediction
+end
+
+outputt = string.gsub(answer,"_p_","")..",";
+for i=1,118 do
+outputt = outputt..tostring(prediction[i])..",";
+outputt = outputt..tostring(geomean)..","..tostring(prediction[119])..","..tostring(geomean)..\n";
 end
 print(outputt)
 until answer=="end"
