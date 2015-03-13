@@ -4,6 +4,8 @@
 # ./classifier.sh
 
 cp feeder.py ../..
+cp crack.lua ../..
+
 cd ../..
 wget http://54.173.20.85:8000/model_3.t7
 nano feeder.py
